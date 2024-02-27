@@ -2,10 +2,8 @@ require('dotenv').config()
 const path = require("path")
 const favicon = require('serve-favicon');
 const express = require('express')
-const session = require("express-session");
-const cors = require("cors");
+const cookieParser = require('cookie-parser');
 const app = express()
-const { CyclicSessionStore } = require("@cyclic.sh/session-store");
 
 // const whitelist = ["http://localhost:3000", "https://adventurous-dove-teddy.cyclic.app", "https://pasaratas.cyclic.app"];
 // const corsOptions = {
@@ -20,29 +18,9 @@ const { CyclicSessionStore } = require("@cyclic.sh/session-store");
 
 // app.use(cors(corsOptions));
 
-const optionsSession = {
-  table: {
-    name: process.env.CYCLIC_DB,
-  }
-};
-
-app.use(
-  session({
-    store: new CyclicSessionStore(optionsSession),
-    secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 6 * 60 * 60 * 1000, secure: !process.env.SECURE ? true : false
-    },
-  })
-);
-
 app.use(express.json())
 
 app.use(express.urlencoded({ extended: true }))
-
-console.log("Cookie Secure : ", !process.env.SECURE ? true : false);
 
 const options = {
   dotfiles: 'ignore',
@@ -52,6 +30,10 @@ const options = {
   maxAge: '1m',
   redirect: false
 }
+
+
+app.use(cookieParser());
+
 app.use(express.static('public', options))
 
 app.use(favicon(path.join(__dirname, 'public', './img/ico/favicon.ico')));

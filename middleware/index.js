@@ -1,12 +1,16 @@
 const { doc } = require("../auth/google");
 const { sheets, getId } = require("../converter/tab");
+const bcrypt = require("bcrypt");
 
 exports.middleWare = async (req, res, next) => {
-  if (req) {
-    switch (req?.session?.isLoggedIn) {
+  if (req?.cookies?.sid && req?.cookies?.auth) {
+    const verified = await bcrypt.compare(req?.cookies?.sid, req?.cookies?.auth)
+    switch (verified) {
       case true:
         if (req._parsedUrl.pathname.includes("login") || req._parsedUrl.pathname.includes("register")) {
           res.status(400).json({ status: false, content: "Already logged in!" }).end();
+        } else if (req._parsedUrl.pathname.includes("status")) {
+          next();
         } else if (req._parsedUrl.pathname.includes("logout")) {
           next();
         } else {
@@ -14,7 +18,7 @@ exports.middleWare = async (req, res, next) => {
           const docUsers = doc.sheetsByTitle["users"];
           const rows = await sheets(docUsers);
           if (rows.status === false) throw rows;
-          const status = await rows.status(req?.session?.uid);
+          const status = await rows.status(req?.cookies?.sid);
           createLog(req).catch((error) => {
             console.log(error);
           });
@@ -59,7 +63,7 @@ async function createLog(req) {
   switch (methods) {
     case "post":
       await rows.push("LOG-" + getId("1234567890", 8), {
-        uid: req?.session?.uid,
+        uid: req?.cookies?.sid,
         method: methods,
         col_id: req?.params?.id,
         col_name: req?.params?.col,
@@ -67,7 +71,7 @@ async function createLog(req) {
       break;
     case "put":
       await rows.push("LOG-" + getId("1234567890", 8), {
-        uid: req?.session?.uid,
+        uid: req?.cookies?.sid,
         method: methods,
         col_id: req?.params?.id,
         col_name: req?.params?.col,
@@ -75,7 +79,7 @@ async function createLog(req) {
       break;
     case "delete":
       await rows.push("LOG-" + getId("1234567890", 8), {
-        uid: req?.session?.uid,
+        uid: req?.cookies?.sid,
         method: methods,
         col_id: req?.params?.id,
         col_name: req?.params?.col,
@@ -83,7 +87,7 @@ async function createLog(req) {
       break;
     case "get":
       await rows.push("LOG-" + getId("1234567890", 8), {
-        uid: req?.session?.uid,
+        uid: req?.cookies?.sid,
         method: methods,
         col_id: req?.params?.id,
         col_name: req?.params?.col,

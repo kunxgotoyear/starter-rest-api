@@ -3,14 +3,24 @@ const bcrypt = require("bcrypt");
 const { doc } = require("../auth/google");
 const { sheets, getId } = require("../converter/tab");
 const { middleWare } = require("../middleware/index");
+const saltRounds = 10;
 
 const router = Router();
 
 router.use(middleWare)
 
 router.post("/status", async (req, res) => {
+  console.log(req?.cookies?.auth);
+  console.log(req?.cookies?.sid);
   try {
-    if (req.session.isLoggedIn) throw { status: true, content: "Already logged in!" };
+    if (req?.cookies?.auth) throw { status: false, content: "Already logged in!" };
+    if (!req?.cookies?.sid)
+      res.cookie('sid', getId("123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM", 144), {
+        maxAge: 6 * 60 * 60 * 1000,
+        path: '/',
+        httpOnly: true,
+        secure: !process.env.SECURE ? true : false,
+      });
     return res.status(400).json({ status: false, content: "Login or Register first!" }).end();
   } catch (error) {
     error.status = false
@@ -20,7 +30,7 @@ router.post("/status", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    if (req.session.isLoggedIn) throw { status: true, content: "Already logged in!" };
+    if (req?.cookies?.auth) throw { status: true, content: "on login Already logged in!" };
     await doc.loadInfo();
     const docUsers = doc.sheetsByTitle["users"];
     const rows = await sheets(docUsers);
@@ -29,8 +39,18 @@ router.post("/login", async (req, res) => {
     const result = await read;
     const match = await bcrypt.compare(req.body.password, result.content[0].password);
     if (!match) throw { status: false, content: "Username and Password not match!" };
-    req.session.isLoggedIn = true;
-    req.session.uid = result.content[0].id;
+    res.cookie('auth', await bcrypt.hash(req.cookies.sid, saltRounds), {
+      maxAge: 6 * 60 * 60 * 1000,
+      path: '/',
+      httpOnly: true,
+      secure: !process.env.SECURE ? true : false,
+    });
+    res.cookie('uid', result.content[0].id, {
+      maxAge: 6 * 60 * 60 * 1000,
+      path: '/',
+      httpOnly: true,
+      secure: !process.env.SECURE ? true : false,
+    });
     return res.status(200).json({ status: true, content: "You are logged in!", uid: result.content[0].id }).end();
   } catch (error) {
     return res.status(400).json(error).end();
@@ -39,7 +59,6 @@ router.post("/login", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const saltRounds = 10;
     await doc.loadInfo();
     const docUsers = doc.sheetsByTitle["users"];
     const rows = await sheets(docUsers);
@@ -56,8 +75,8 @@ router.post("/register", async (req, res) => {
 
 router.put("/logout", async (req, res) => {
   try {
-    if (!req.session.isLoggedIn) throw { status: false, content: "Login first!" };
-    req.session.isLoggedIn = false;
+    if (!req?.cookies?.auth) throw { status: false, content: "Login first!" };
+    res.clearCookie('auth');
     return res.status(200).json({ status: true, content: "Successfully logout!" }).end();
   } catch (error) {
     return res.status(400).json(error).end();
@@ -66,7 +85,7 @@ router.put("/logout", async (req, res) => {
 
 router.put("/profile/:id", async (req, res) => {
   try {
-    if (!req.session.isLoggedIn) throw { status: false, content: "Login first!" };
+    if (!req?.cookies?.auth) throw { status: false, content: "Login first!" };
     await doc.loadInfo();
     const docUsers = doc.sheetsByTitle["users"];
     const rows = await sheets(docUsers);
@@ -90,7 +109,7 @@ router.put("/profile/:id", async (req, res) => {
 
 router.put("/change_password/:id", async (req, res) => {
   try {
-    if (!req.session.isLoggedIn) throw { status: false, content: "Login first!" };
+    if (!req?.cookies?.auth) throw { status: false, content: "Login first!" };
     const saltRounds = 10;
     await doc.loadInfo();
     const docUsers = doc.sheetsByTitle["users"];

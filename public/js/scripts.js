@@ -36,11 +36,9 @@ $(document).ready(async function () {
         url: "/auth/status?Content-Type=application/json&Charset=UTF-8",
         dataType: "json",
         success: function (response) {
-            console.log("Success!", response);
             modal.hide()
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR, textStatus, errorThrown);
             const response = jqXHR.responseJSON
             if (response.status === false && response.content.toLowerCase().includes("register")) {
                 switch (location.pathname) {
@@ -55,7 +53,7 @@ $(document).ready(async function () {
                         modal.hide()
                         break;
                 }
-            } else if (response.status === false && response.content.toLowerCase().includes("denied")) {
+            } else if (response.status === false) {
                 const path = [
                     "/login",
                     "/register",
@@ -89,7 +87,6 @@ $(document).ready(async function () {
     });
     $("[data-form-login]").submit((e) => {
         e.preventDefault()
-        console.log(e);
         const formData = new FormData(e.target)
         const data = Object.fromEntries(formData)
         modal.show()
@@ -100,13 +97,11 @@ $(document).ready(async function () {
             data,
             dataType: "json",
             success: function (response) {
-                console.log("Success!", response);
                 modal.hide()
                 Notif(instance).show(response)
                 window.location.replace("main.html");
             },
             error: function (result) {
-                console.error(result.responseJSON,);
                 modal.hide()
                 Notif(instance).show(result.responseJSON)
             }
@@ -119,13 +114,11 @@ $(document).ready(async function () {
             url: "/auth/logout?Content-Type=application/json&Charset=UTF-8",
             dataType: "json",
             success: function (response) {
-                console.log("Success!", response);
                 modal.hide()
                 Notif(instance).show(response)
                 window.location.replace("login.html");
             },
             error: function (result) {
-                console.error(result.responseJSON,);
                 modal.hide()
                 Notif(instance).show(result.responseJSON)
             }
