@@ -5,7 +5,17 @@ const { sheets, getId } = require("../converter/tab");
 
 const router = Router();
 
+router.get("/status", async (req, res) => {
+  try {
+    if (req.session.isLoggedIn) throw { status: true, content: "Already logged in!" };
+    return res.status(200).json({ status: true, content: "You are logged in!" });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+})
+
 router.post("/login", async (req, res) => {
+  console.log("post");
   try {
     if (req.session.isLoggedIn) throw { status: true, content: "Already logged in!" };
     await doc.loadInfo();
@@ -19,7 +29,7 @@ router.post("/login", async (req, res) => {
     req.session.isLoggedIn = true;
     req.session.uid = result.content[0].id;
     console.log(req.session);
-    return res.status(200).json({ status: true, content: "You are logged in!", uid: result.content[0].id, sessionID: "" });
+    return res.status(200).json({ status: true, content: "You are logged in!", uid: result.content[0].id });
   } catch (error) {
     return res.status(400).json(error);
   }
