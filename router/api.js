@@ -2,7 +2,9 @@ const { Router } = require("express");
 const router = Router();
 const { doc } = require("../auth/google");
 const { sheets, getDataForPage, getId } = require("../converter/tab");
+const { middleWare } = require("../middleware/index");
 
+router.use(middleWare)
 // Get All
 router.get("/:col", async (req, res) => {
   try {
@@ -23,10 +25,10 @@ router.get("/:col", async (req, res) => {
       total_pages: totalPages,
       total_items: result.content.length,
     };
-    res.status(200).json(result);
+    res.status(200).json(result).end();
   } catch (error) {
     error.status = false
-    res.status(400).json(error);
+    res.status(400).json(error).end();
   }
 });
 
@@ -40,10 +42,10 @@ router.get("/:col/:id", async (req, res) => {
     if (rows.status === false) throw rows;
     const read = rows.read(req.params.id);
     const result = await read;
-    res.status(200).json(result);
+    res.status(200).json(result).end();
   } catch (error) {
     error.status = false
-    res.status(400).json(error);
+    res.status(400).json(error).end();
   }
 });
 
@@ -59,10 +61,10 @@ router.post("/:col", async (req, res) => {
       ? rows.push(col.toUpperCase() + "-" + getId("1234567890", 8), req.body)
       : rows.create(col.toUpperCase() + "-" + getId("1234567890", 8), req.body);
     const result = await create;
-    res.status(200).json(result);
+    res.status(200).json(result).end();
   } catch (error) {
     error.status = false
-    res.status(400).json(error);
+    res.status(400).json(error).end();
   }
 });
 
@@ -77,10 +79,10 @@ router.put("/:col/:id", async (req, res) => {
     const id = req.params.id;
     const update = rows.update(id, req.body);
     const result = await update;
-    res.status(200).json(result);
+    res.status(200).json(result).end();
   } catch (error) {
     error.status = false
-    res.status(400).json(error);
+    res.status(400).json(error).end();
   }
 });
 
@@ -95,10 +97,10 @@ router.delete("/:col/:id", async (req, res) => {
     const id = req.params.id;
     const del = rows.delete(id, req.body);
     const result = await del;
-    res.status(200).json(result);
+    res.status(200).json(result).end();
   } catch (error) {
     error.status = false
-    res.status(400).json(error);
+    res.status(400).json(error).end();
   }
 });
 

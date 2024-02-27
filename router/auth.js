@@ -2,16 +2,19 @@ const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const { doc } = require("../auth/google");
 const { sheets, getId } = require("../converter/tab");
+const { middleWare } = require("../middleware/index");
 
 const router = Router();
+
+router.use(middleWare)
 
 router.post("/status", async (req, res) => {
   try {
     if (req.session.isLoggedIn) throw { status: true, content: "Already logged in!" };
-    return res.status(400).json({ status: false, content: "Login or Register first!" });
+    return res.status(400).json({ status: false, content: "Login or Register first!" }).end();
   } catch (error) {
     error.status = false
-    return res.status(400).json(error);
+    return res.status(400).json(error).end();
   }
 })
 
@@ -28,9 +31,9 @@ router.post("/login", async (req, res) => {
     if (!match) throw { status: false, content: "Username and Password not match!" };
     req.session.isLoggedIn = true;
     req.session.uid = result.content[0].id;
-    return res.status(200).json({ status: true, content: "You are logged in!", uid: result.content[0].id });
+    return res.status(200).json({ status: true, content: "You are logged in!", uid: result.content[0].id }).end();
   } catch (error) {
-    return res.status(400).json(error);
+    return res.status(400).json(error).end();
   }
 });
 
@@ -45,9 +48,9 @@ router.post("/register", async (req, res) => {
     const create = rows.customCreate("username", getId("1234567890qwertyuiopasdfghjklzxcvbnm", 14), req.body);
     const result = await create;
     if (!result.status) throw result;
-    return res.status(200).json(result);
+    return res.status(200).json(result).end();
   } catch (error) {
-    return res.status(400).json(error);
+    return res.status(400).json(error).end();
   }
 });
 
@@ -55,9 +58,9 @@ router.put("/logout", async (req, res) => {
   try {
     if (!req.session.isLoggedIn) throw { status: false, content: "Login first!" };
     req.session.isLoggedIn = false;
-    return res.status(200).json({ status: true, content: "Successfully logout!" });
+    return res.status(200).json({ status: true, content: "Successfully logout!" }).end();
   } catch (error) {
-    return res.status(400).json(error);
+    return res.status(400).json(error).end();
   }
 });
 
@@ -79,9 +82,9 @@ router.put("/profile/:id", async (req, res) => {
     const update = rows.update(req.params.id, req.body);
     const updated = await update;
     if (updated.status === false) throw updated;
-    return res.status(200).json({ status: true, content: "Profile updated!" });
+    return res.status(200).json({ status: true, content: "Profile updated!" }).end();
   } catch (error) {
-    return res.status(400).json(error);
+    return res.status(400).json(error).end();
   }
 });
 
@@ -106,9 +109,9 @@ router.put("/change_password/:id", async (req, res) => {
     const update = rows.update(req.params.id, req.body);
     const updated = await update;
     if (updated.status === false) throw updated;
-    return res.status(200).json({ status: true, content: "New password updated!" });
+    return res.status(200).json({ status: true, content: "New password updated!" }).end();
   } catch (error) {
-    return res.status(400).json(error);
+    return res.status(400).json(error).end();
   }
 });
 

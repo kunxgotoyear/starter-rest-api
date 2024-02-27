@@ -6,7 +6,7 @@ exports.middleWare = async (req, res, next) => {
     switch (req?.session?.isLoggedIn) {
       case true:
         if (req._parsedUrl.pathname.includes("login") || req._parsedUrl.pathname.includes("register")) {
-          res.status(400).json({ status: false, content: "Already logged in!" });
+          res.status(400).json({ status: false, content: "Already logged in!" }).end();
         } else if (req._parsedUrl.pathname.includes("logout")) {
           next();
         } else {
@@ -21,16 +21,15 @@ exports.middleWare = async (req, res, next) => {
           if (req?.params?.col) {
             if (req?.params?.col === "users") {
               if (status === "isAdmin") return next();
-              return res.status(400).json({ status: false, content: "Access denied!" });
+              return res.status(400).json({ status: false, content: "Access denied!" }).end();
             } else if (req?.params?.col === "status") {
               return next()
             } else {
               if (status === "isStaff" || status === "isAdmin") return next();
-              return res.status(400).json({ status: false, content: "Access denied!" });
+              return res.status(400).json({ status: false, content: "Access denied!" }).end();
             }
           } else {
-            console.log(undefined);
-            return res.status(400).json({ status: false, content: "Access denied!" }).end();
+            return res.status(400).json({ status: false, content: "Access denied!" }).end()
           }
         }
         break;
@@ -40,7 +39,7 @@ exports.middleWare = async (req, res, next) => {
           if (req._parsedUrl.pathname.includes("login") || req._parsedUrl.pathname.includes("register") || req._parsedUrl.pathname.includes("status")) {
             return next();
           } else {
-            res.status(400).json({ status: false, content: "Login or Register first!" });
+            res.status(400).json({ status: false, content: "Login or Register first!" }).end();
           }
         } else {
           return next()

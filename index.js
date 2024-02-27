@@ -5,7 +5,6 @@ const express = require('express')
 const session = require("express-session");
 const cors = require("cors");
 const app = express()
-const { middleWare } = require("./middleware");
 
 // const whitelist = ["http://localhost:3000", "https://adventurous-dove-teddy.cyclic.app", "https://pasaratas.cyclic.app"];
 // const corsOptions = {
@@ -37,10 +36,6 @@ app.use(express.urlencoded({ extended: true }))
 
 console.log("Cookie Secure : ", !process.env.SECURE ? true : false);
 
-// #############################################################################
-// This configures static hosting for files in /public that have the extensions
-// listed in the array.
-
 const options = {
   dotfiles: 'ignore',
   etag: false,
@@ -50,12 +45,8 @@ const options = {
   redirect: false
 }
 app.use(express.static('public', options))
-// #############################################################################
-
 
 app.use(favicon(path.join(__dirname, 'public', './img/ico/favicon.ico')));
-
-app.use(middleWare);
 
 app.use("/api", require("./router/api"));
 
@@ -63,10 +54,11 @@ app.use("/auth", require("./router/auth"));
 
 app.use("/upload", require("./router/upload"));
 
-// Catch all handler for all other request.
-app.use('*', (req, res) => {
-  res.json({ msg: 'no route handler found' }).end()
-})
+// Error-handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ status: false, content: 'Something went wrong!' });
+});
 
 // Start the server
 const port = process.env.PORT || 3000

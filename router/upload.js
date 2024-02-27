@@ -6,11 +6,11 @@ const multer = require("multer");
 const upload = multer().single("file");
 
 router.get("/", async (req, res) => {
-  res.json({ status: true });
+  res.json({ status: true }).end();
 });
 
 router.get("/:file", async (req, res) => {
-  res.json({ status: true });
+  res.json({ status: true }).end();
 });
 
 router.post("/", upload, (req, res) => {
@@ -47,7 +47,7 @@ router.post("/", upload, (req, res) => {
 });
 
 router.delete("/:file", async (req, res) => {
-  res.json({ status: true });
+  res.json({ status: true }).end();
 });
 
 module.exports = router;
