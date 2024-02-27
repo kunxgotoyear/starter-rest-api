@@ -25,6 +25,7 @@ router.get("/:col", async (req, res) => {
     };
     res.status(200).json(result);
   } catch (error) {
+    error.status = false
     res.status(400).json(error);
   }
 });
@@ -41,6 +42,7 @@ router.get("/:col/:id", async (req, res) => {
     const result = await read;
     res.status(200).json(result);
   } catch (error) {
+    error.status = false
     res.status(400).json(error);
   }
 });
@@ -59,6 +61,7 @@ router.post("/:col", async (req, res) => {
     const result = await create;
     res.status(200).json(result);
   } catch (error) {
+    error.status = false
     res.status(400).json(error);
   }
 });
@@ -76,6 +79,7 @@ router.put("/:col/:id", async (req, res) => {
     const result = await update;
     res.status(200).json(result);
   } catch (error) {
+    error.status = false
     res.status(400).json(error);
   }
 });
@@ -93,6 +97,7 @@ router.delete("/:col/:id", async (req, res) => {
     const result = await del;
     res.status(200).json(result);
   } catch (error) {
+    error.status = false
     res.status(400).json(error);
   }
 });

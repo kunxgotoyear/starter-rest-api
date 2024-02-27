@@ -65,15 +65,19 @@ $(document).ready(async function () {
                     case "/login.html":
                         console.log(location.pathname);
                         console.log("go back");
-                        history.back()
-                        console.log(history);
+                        window.location.replace("main.html");
                         modal.hide()
                         break;
                     case "/register.html":
                         console.log(location.pathname);
                         console.log("go back");
-                        history.back()
-                        console.log(history);
+                        window.location.replace("main.html");
+                        modal.hide()
+                        break;
+                    case "/index.html":
+                        console.log(location.pathname);
+                        console.log("go back");
+                        window.location.replace("main.html");
                         modal.hide()
                         break;
                     default:
@@ -101,7 +105,26 @@ $(document).ready(async function () {
                 console.log("Success!", response);
                 modal.hide()
                 Notif(instance).show(response)
-                history.back()
+                window.location.replace("main.html");
+            },
+            error: function (result) {
+                console.error(result.responseJSON,);
+                modal.hide()
+                Notif(instance).show(result.responseJSON)
+            }
+        });
+    })
+    $("[data-button-logout]").click((e) => {
+        e.preventDefault()
+        $.ajax({
+            type: "PUT",
+            url: "http://localhost:3000/auth/logout?Content-Type=application/json&Charset=UTF-8",
+            dataType: "json",
+            success: function (response) {
+                console.log("Success!", response);
+                modal.hide()
+                Notif(instance).show(response)
+                window.location.replace("login.html");
             },
             error: function (result) {
                 console.error(result.responseJSON,);

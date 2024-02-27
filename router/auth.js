@@ -52,16 +52,9 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.put("/logout/:id", async (req, res) => {
+router.put("/logout", async (req, res) => {
   try {
     if (!req.session.isLoggedIn) throw { status: false, content: "Login first!" };
-    await doc.loadInfo();
-    const docUsers = doc.sheetsByTitle["users"];
-    const rows = await sheets(docUsers);
-    if (rows.status === false) throw rows;
-    const read = rows.read(req.params.id);
-    const result = await read;
-    if (result.status === false) throw result;
     req.session.isLoggedIn = false;
     return res.status(200).json({ status: true, content: "Successfully logout!" });
   } catch (error) {
