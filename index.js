@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-
+const { middleWare } = require("./middleware");
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -18,10 +18,18 @@ const options = {
 app.use(express.static('public', options))
 // #############################################################################
 
+app.use(middleWare);
+
+app.use("/api", require("./router/api"));
+
+app.use("/auth", require("./router/auth"));
+
+app.use("/upload", require("./router/upload"));
+
 // Catch all handler for all other request.
-// app.use('*', (req, res) => {
-//   res.json({ msg: 'no route handler found' }).end()
-// })
+app.use('*', (req, res) => {
+  res.json({ msg: 'no route handler found' }).end()
+})
 
 // Start the server
 const port = process.env.PORT || 3000
