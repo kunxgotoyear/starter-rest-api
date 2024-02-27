@@ -5,6 +5,7 @@ const express = require('express')
 const session = require("express-session");
 const cors = require("cors");
 const app = express()
+const { CyclicSessionStore } = require("@cyclic.sh/session-store");
 
 // const whitelist = ["http://localhost:3000", "https://adventurous-dove-teddy.cyclic.app", "https://pasaratas.cyclic.app"];
 // const corsOptions = {
@@ -19,8 +20,15 @@ const app = express()
 
 // app.use(cors(corsOptions));
 
+const optionsSession = {
+  table: {
+    name: process.env.CYCLIC_DB,
+  }
+};
+
 app.use(
   session({
+    store: new CyclicSessionStore(optionsSession),
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
