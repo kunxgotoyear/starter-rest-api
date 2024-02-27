@@ -18,8 +18,7 @@ const { middleWare } = require("./middleware");
 
 // app.use(cors(corsOptions));
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -30,6 +29,10 @@ app.use(
     },
   })
 );
+
+app.use(express.json())
+
+app.use(express.urlencoded({ extended: true }))
 
 console.log("Cookie Secure : ", !process.env.SECURE ? true : false);
 
