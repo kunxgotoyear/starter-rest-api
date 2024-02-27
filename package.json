@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "env-cmd nodemon index.js",
-    "repl": "env-cmd node"
+    "dev": "nodemon index.js",
+    "repl": "node"
   },
   "keywords": [],
   "author": "Kam Lasater <kam.lasater@cyclic.sh>",
