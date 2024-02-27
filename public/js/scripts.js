@@ -33,7 +33,7 @@ $(document).ready(async function () {
 
     $.ajax({
         type: "GET",
-        url: "http://localhost:3000/auth/status?Content-Type=application/json&Charset=UTF-8",
+        url: "/auth/status?Content-Type=application/json&Charset=UTF-8",
         dataType: "json",
         success: function (response) {
             console.log("Success!", response);
@@ -98,7 +98,7 @@ $(document).ready(async function () {
 
         $.ajax({
             type: "POST",
-            url: "http://localhost:3000/auth/login?Content-Type=application/json&Charset=UTF-8",
+            url: "/auth/login?Content-Type=application/json&Charset=UTF-8",
             data,
             dataType: "json",
             success: function (response) {
@@ -118,7 +118,7 @@ $(document).ready(async function () {
         e.preventDefault()
         $.ajax({
             type: "PUT",
-            url: "http://localhost:3000/auth/logout?Content-Type=application/json&Charset=UTF-8",
+            url: "/auth/logout?Content-Type=application/json&Charset=UTF-8",
             dataType: "json",
             success: function (response) {
                 console.log("Success!", response);
