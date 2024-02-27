@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const session = require("express-session");
 const cors = require("cors");
@@ -25,14 +26,17 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: 6 * 60 * 60 * 1000, secure: true
+      maxAge: 6 * 60 * 60 * 1000, secure: !process.env.SECURE ? true : false
     },
   })
 );
 
+console.log("Cookie Secure : ", !process.env.SECURE ? true : false);
+
 // #############################################################################
 // This configures static hosting for files in /public that have the extensions
 // listed in the array.
+
 const options = {
   dotfiles: 'ignore',
   etag: false,
