@@ -5,11 +5,12 @@ const { sheets, getId } = require("../converter/tab");
 
 const router = Router();
 
-router.get("/status", async (req, res) => {
+router.post("/status", async (req, res) => {
   try {
     if (req.session.isLoggedIn) throw { status: true, content: "Already logged in!" };
-    return res.status(200).json({ status: true, content: "You are logged in!" });
+    return res.status(400).json({ status: false, content: "Login or Register first!" });
   } catch (error) {
+    error.status = false
     return res.status(400).json(error);
   }
 })

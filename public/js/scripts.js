@@ -8,13 +8,13 @@ const instance = mdb.Toast.getInstance(document.getElementById('placement-exampl
         update: () => {
             instance.update({
                 stacking: true,
+
                 hidden: true,
                 width: '375px',
                 position: 'top-right',
                 autohide: true,
                 delay: 3000,
             });
-
         },
         show: ({ ...arg }) => {
             console.log(document.getElementById('placement-example-toast'));
@@ -32,7 +32,7 @@ const instance = mdb.Toast.getInstance(document.getElementById('placement-exampl
 $(document).ready(async function () {
 
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "/auth/status?Content-Type=application/json&Charset=UTF-8",
         dataType: "json",
         success: function (response) {
@@ -40,51 +40,49 @@ $(document).ready(async function () {
             modal.hide()
         },
         error: function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR, textStatus, errorThrown);
             const response = jqXHR.responseJSON
-            if (response.status === false && response.content.toLowerCase().includes("login") && response.content.toLowerCase().includes("register")) {
+            if (response.status === false && response.content.toLowerCase().includes("register")) {
                 switch (location.pathname) {
                     case "/login.html":
-                        console.log(location.pathname);
-                        console.log("stay page login");
                         modal.hide()
                         break;
                     case "/register.html":
-                        console.log(location.pathname);
-                        console.log("stay page register");
                         modal.hide()
                         break;
                     default:
-                        console.log(location.pathname);
-                        console.log("goto page login");
                         location.href = "/login.html"
                         modal.hide()
                         break;
                 }
-            } else {
-                switch (location.pathname) {
-                    case "/login.html":
-                        console.log(location.pathname);
-                        console.log("go back");
+            } else if (response.status === false && response.content.toLowerCase().includes("denied")) {
+                const path = [
+                    "/login",
+                    "/register",
+                    "/index",
+                    "/",
+                ]
+                switch (location.pathname.replace(".html", "")) {
+                    case "/login":
                         window.location.replace("main.html");
                         modal.hide()
                         break;
-                    case "/register.html":
-                        console.log(location.pathname);
-                        console.log("go back");
+                    case "/register":
                         window.location.replace("main.html");
                         modal.hide()
                         break;
-                    case "/index.html":
-                        console.log(location.pathname);
-                        console.log("go back");
+                    case "/index":
+                        window.location.replace("main.html");
+                        modal.hide()
+                        break;
+                    case "/":
                         window.location.replace("main.html");
                         modal.hide()
                         break;
                     default:
-                        console.log(location.pathname);
-                        console.log("stay");
                         modal.hide()
                         break;
+
                 }
             }
         }

@@ -26,6 +26,7 @@
     "google-spreadsheet": "^4.1.0",
     "googleapis": "^131.0.0",
     "multer": "^1.4.5-lts.1",
-    "nanoid": "^0.2.2"
+    "nanoid": "^0.2.2",
+    "serve-favicon": "^2.5.0"
   }
 }
