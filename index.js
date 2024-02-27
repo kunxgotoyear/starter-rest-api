@@ -18,11 +18,10 @@ const { middleWare } = require("./middleware");
 
 // app.use(cors(corsOptions));
 
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: {
       maxAge: 6 * 60 * 60 * 1000, secure: !process.env.SECURE ? true : false
