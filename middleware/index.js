@@ -95,3 +95,27 @@ async function createLog(req) {
       break;
   }
 }
+
+exports.createSID = async (res) => {
+  res.cookie('sid', getId("123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM", 144), {
+    maxAge: 6 * 60 * 60 * 1000,
+    path: '/',
+    httpOnly: true,
+    secure: !process.env.SECURE ? true : false,
+  });
+}
+
+exports.createAUTH = async (res, generate, result) => {
+  res.cookie('auth', generate, {
+    maxAge: 6 * 60 * 60 * 1000,
+    path: '/',
+    httpOnly: true,
+    secure: !process.env.SECURE ? true : false,
+  });
+  res.cookie('uid', result.content.id, {
+    maxAge: 6 * 60 * 60 * 1000,
+    path: '/',
+    httpOnly: true,
+    secure: !process.env.SECURE ? true : false,
+  });
+}

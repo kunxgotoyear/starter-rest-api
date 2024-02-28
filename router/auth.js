@@ -2,7 +2,7 @@ const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const { doc } = require("../auth/google");
 const { sheets, getId } = require("../converter/tab");
-const { middleWare } = require("../middleware/index");
+const { middleWare, createSID, createAUTH } = require("../middleware/index");
 const saltRounds = 10;
 
 const router = Router();
@@ -12,13 +12,7 @@ router.use(middleWare)
 router.post("/status", async (req, res) => {
   try {
     if (req?.cookies?.auth) throw { status: false, content: "Already logged in!" };
-    if (!req?.cookies?.sid)
-      res.cookie('sid', getId("123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM", 144), {
-        maxAge: 6 * 60 * 60 * 1000,
-        path: '/',
-        httpOnly: true,
-        secure: !process.env.SECURE ? true : false,
-      });
+    if (!req?.cookies?.sid) createSID(res)
     return res.status(400).json({ status: false, content: "Login or Register first!" }).end();
   } catch (error) {
     error.status = false
@@ -37,18 +31,7 @@ router.post("/login", async (req, res) => {
     const result = await read;
     const match = await bcrypt.compare(req.body.password, result.content.password);
     if (!match) throw { status: false, content: "Username and Password not match!" };
-    res.cookie('auth', await bcrypt.hash(req.cookies.sid, saltRounds), {
-      maxAge: 6 * 60 * 60 * 1000,
-      path: '/',
-      httpOnly: true,
-      secure: !process.env.SECURE ? true : false,
-    });
-    res.cookie('uid', result.content.id, {
-      maxAge: 6 * 60 * 60 * 1000,
-      path: '/',
-      httpOnly: true,
-      secure: !process.env.SECURE ? true : false,
-    });
+    createAUTH(res, await bcrypt.hash(req.cookies.sid, saltRounds), result)
     return res.status(200).json({ status: true, content: "You are logged in!", uid: result.content.id }).end();
   } catch (error) {
     return res.status(400).json(error).end();
@@ -75,6 +58,7 @@ router.put("/logout", async (req, res) => {
   try {
     if (!req?.cookies?.auth) throw { status: false, content: "Login first!" };
     res.clearCookie('auth');
+    res.clearCookie('uid');
     return res.status(200).json({ status: true, content: "Successfully logout!" }).end();
   } catch (error) {
     return res.status(400).json(error).end();
