@@ -1,128 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="css/all.min.css">
-    <link rel="stylesheet" href="css/core.min.css">
+    <link rel="stylesheet" href="css/all.min.css" />
+    <link rel="stylesheet" href="css/core.min.css" />
     <style>
+      .gradient-custom-2 {
+        /* fallback for old browsers */
+        background: #fccb90;
+
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+      }
+
+      @media (min-width: 768px) {
+        .gradient-form {
+          height: 100vh !important;
+        }
+      }
+
+      @media (min-width: 769px) {
         .gradient-custom-2 {
-            /* fallback for old browsers */
-            background: #fccb90;
-
-            /* Chrome 10-25, Safari 5.1-6 */
-            background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
-
-            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-            background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+          border-top-right-radius: 0.3rem;
+          border-bottom-right-radius: 0.3rem;
         }
-
-        @media (min-width: 768px) {
-            .gradient-form {
-                height: 100vh !important;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .gradient-custom-2 {
-                border-top-right-radius: .3rem;
-                border-bottom-right-radius: .3rem;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-
-
-<body style="background-color: #eee;">
+  <body style="background-color: #eee">
     <section class="h-100 gradient-form">
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-xl-10">
-                    <div class="card rounded-3 text-black">
-                        <div class="row g-0">
-                            <div class="col-lg-6">
-                                <div class="card-body p-md-5 mx-md-4">
-                                    <div class="text-center">
-                                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/lotus.webp"
-                                            style="width: 185px;" alt="logo">
-                                        <h4 class="mt-1 mb-5 pb-1">We are The Lotus Team</h4>
-                                    </div>
-
-                                    <form data-form-login="">
-                                        <p>Please login to your account</p>
-
-                                        <div class="form-outline mb-4">
-                                            <input type="text" id="username" name="username" class="form-control"
-                                                placeholder="Phone number or email address" required />
-                                            <label class="form-label" for="username">Username</label>
-                                        </div>
-
-                                        <div class="form-outline mb-4">
-                                            <input type="password" id="password" name="password" class="form-control"
-                                                required />
-                                            <label class="form-label" for="password">Password</label>
-                                        </div>
-
-                                        <div class="text-center pt-1 mb-5 pb-1">
-                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                type="submit">Log
-                                                in</button>
-                                            <a class="text-muted" href="forgot_password.html">Forgot password?</a>
-                                        </div>
-
-                                        <div class="d-flex align-items-center justify-content-center pb-4">
-                                            <p class="mb-0 me-2">Don't have an account?</p>
-                                            <a href="register.html" type="button"
-                                                class="btn btn-outline-danger">Register</a>
-                                        </div>
-
-                                    </form>
-
-                                </div>
-                            </div>
-                            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
-                                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                                    <h4 class="mb-4">🚀 Top-notch Development Team in Sukabumi - Over 15 Years of Web Programming Expertise</h4>
-                                    <p class="small mb-0">Welcome to the Best Developer Team in Sukabumi! We are a group of experts with over 15 years of experience in the web programming realm. With our commitment to delivering high-tech solutions, we are ready to assist you in bringing your digital projects to life.
-
-</p>
-                                </div>
-                            </div>
-                        </div>
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-xl-10">
+            <div class="card rounded-3 text-black">
+              <div class="row g-0">
+                <div class="col-lg-6">
+                  <div class="card-body p-md-5 mx-md-4">
+                    <div class="text-center">
+                      <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/lotus.webp" style="width: 185px" alt="logo" />
+                      <h4 class="mt-1 mb-5 pb-1">We are The Lotus Team</h4>
                     </div>
+
+                    <form data-form-login="">
+                      <p>Please login to your account</p>
+
+                      <div class="form-outline mb-4">
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Phone number or email address" required />
+                        <label class="form-label" for="username">Username</label>
+                      </div>
+
+                      <div class="form-outline mb-4">
+                        <input type="password" id="password" name="password" class="form-control" required />
+                        <label class="form-label" for="password">Password</label>
+                      </div>
+
+                      <div class="text-center pt-1 mb-5 pb-1">
+                        <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Log in</button>
+                        <a class="text-muted" href="forgot_password.html">Forgot password?</a>
+                      </div>
+
+                      <div class="d-flex align-items-center justify-content-center pb-4">
+                        <p class="mb-0 me-2">Don't have an account?</p>
+                        <a href="register.html" type="button" class="btn btn-outline-danger">Register</a>
+                      </div>
+                    </form>
+                  </div>
                 </div>
+                <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                  <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                    <h4 class="mb-4">🚀 Top-notch Development Team in Sukabumi - Over 15 Years of Web Programming Expertise</h4>
+                    <p class="small mb-0">
+                      Welcome to the Best Developer Team in Sukabumi! We are a group of experts with over 15 years of experience in the web programming realm. With our commitment
+                      to delivering high-tech solutions, we are ready to assist you in bringing your digital projects to life.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </section>
-</body>
-<!-- Toast Alert -->
-<div class="toast" id="placement-example-toast" role="alert" aria-live="assertive" aria-atomic="true"
-    data-mdb-toast-init data-mdb-autohide="false">
+  </body>
+  <!-- Toast Alert -->
+  <div class="toast" id="placement-example-toast" role="alert" aria-live="assertive" aria-atomic="true" data-mdb-toast-init data-mdb-autohide="false">
     <div class="toast-header">
-        <strong class="me-auto">The Lotus Team</strong>
-        <small></small>
-        <button type="button" class="btn-close" data-mdb-dismiss="toast" aria-label="Close"></button>
+      <strong class="me-auto">The Lotus Team</strong>
+      <small></small>
+      <button type="button" class="btn-close" data-mdb-dismiss="toast" aria-label="Close"></button>
     </div>
     <div class="toast-body"></div>
-</div>
-<!-- Modal Alert -->
-<div class="modal" id="modalAlert" tabindex="-1" aria-labelledby="modalAlertLabel" aria-hidden="true">
+  </div>
+  <!-- Modal Alert -->
+  <div class="modal" id="modalAlert" tabindex="-1" aria-labelledby="modalAlertLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen d-flex justify-content-center align-items-center">
-        <h3>
-            <i class="fa-duotone fa-spinner-third fa-spin text-light"></i>
-        </h3>
+      <h3>
+        <i class="fa-duotone fa-spinner-third fa-spin text-light"></i>
+      </h3>
     </div>
-</div>
-<script src="js/core.min.js" type="text/javascript"></script>
-<script src="js/module.min.js" type="text/javascript"></script>
-<script src="js/jquery-3.7.1.min.js" type="text/javascript"></script>
-<script src="js/scripts.min.js" type="text/javascript"></script>
+  </div>
+  <script src="js/core.min.js" type="text/javascript"></script>
+  <script src="js/module.min.js" type="text/javascript"></script>
+  <script src="js/jquery-3.7.1.min.js" type="text/javascript"></script>
+  <script src="js/scripts.min.js" type="text/javascript"></script>
 
-<script>
-
-</script>
-
+  <script></script>
 </html>
