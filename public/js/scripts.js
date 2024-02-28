@@ -17,7 +17,6 @@ const instance = mdb.Toast.getInstance(document.getElementById('placement-exampl
             });
         },
         show: ({ ...arg }) => {
-            console.log(document.getElementById('placement-example-toast'));
             !arg.status ? instance.update({ color: "danger" }) : instance.update({ color: "light" })
             document.getElementById('placement-example-toast').children[1].textContent = arg.content
             instance.show()
@@ -36,10 +35,12 @@ $(document).ready(async function () {
         url: "/auth/status?Content-Type=application/json&Charset=UTF-8",
         dataType: "json",
         success: function (response) {
+            console.log(response);
             modal.hide()
         },
-        error: function (jqXHR, textStatus, errorThrown) {
-            const response = jqXHR.responseJSON
+        error: function (result) {
+            console.log(result);
+            const response = result.responseJSON
             if (response.status === false && response.content.toLowerCase().includes("register")) {
                 switch (location.pathname) {
                     case "/login.html":
@@ -100,6 +101,27 @@ $(document).ready(async function () {
                 modal.hide()
                 Notif(instance).show(response)
                 window.location.replace("main.html");
+            },
+            error: function (result) {
+                modal.hide()
+                Notif(instance).show(result.responseJSON)
+            }
+        });
+    })
+    $("[data-form-register]").submit((e) => {
+        e.preventDefault()
+        const formData = new FormData(e.target)
+        const data = Object.fromEntries(formData)
+        modal.show()
+        $.ajax({
+            type: "POST",
+            url: "/auth/register?Content-Type=application/json&Charset=UTF-8",
+            data,
+            dataType: "json",
+            success: function (response) {
+                modal.hide()
+                Notif(instance).show(response)
+                window.location.replace("login.html");
             },
             error: function (result) {
                 modal.hide()

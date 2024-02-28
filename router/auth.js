@@ -10,8 +10,6 @@ const router = Router();
 router.use(middleWare)
 
 router.post("/status", async (req, res) => {
-  console.log(req?.cookies?.auth);
-  console.log(req?.cookies?.sid);
   try {
     if (req?.cookies?.auth) throw { status: false, content: "Already logged in!" };
     if (!req?.cookies?.sid)
@@ -35,9 +33,9 @@ router.post("/login", async (req, res) => {
     const docUsers = doc.sheetsByTitle["users"];
     const rows = await sheets(docUsers);
     if (rows.status === false) throw rows;
-    const read = rows.read();
+    const read = rows.customRead("username", req.body.username);
     const result = await read;
-    const match = await bcrypt.compare(req.body.password, result.content[0].password);
+    const match = await bcrypt.compare(req.body.password, result.content.password);
     if (!match) throw { status: false, content: "Username and Password not match!" };
     res.cookie('auth', await bcrypt.hash(req.cookies.sid, saltRounds), {
       maxAge: 6 * 60 * 60 * 1000,
@@ -45,13 +43,13 @@ router.post("/login", async (req, res) => {
       httpOnly: true,
       secure: !process.env.SECURE ? true : false,
     });
-    res.cookie('uid', result.content[0].id, {
+    res.cookie('uid', result.content.id, {
       maxAge: 6 * 60 * 60 * 1000,
       path: '/',
       httpOnly: true,
       secure: !process.env.SECURE ? true : false,
     });
-    return res.status(200).json({ status: true, content: "You are logged in!", uid: result.content[0].id }).end();
+    return res.status(200).json({ status: true, content: "You are logged in!", uid: result.content.id }).end();
   } catch (error) {
     return res.status(400).json(error).end();
   }
