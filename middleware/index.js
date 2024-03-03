@@ -18,15 +18,15 @@ exports.middleWare = async (req, res, next) => {
           const docUsers = doc.sheetsByTitle["users"]
           const rows = await sheets(docUsers)
           if (rows.status === false) throw rows
-          const status = await rows.status(req?.cookies?.sid)
+          const status = await rows.status(req?.cookies?.uid)
           createLog(req).catch((error) => {
             console.log(error)
           })
-          if (req?.params?.col) {
-            if (req?.params?.col === "users") {
+          if (req?._parsedUrl?.pathname) {
+            if (req?._parsedUrl?.pathname.includes("users")) {
               if (status === "isAdmin") return next()
               return res.status(400).json({status: false, content: "Access denied!"}).end()
-            } else if (req?.params?.col === "status") {
+            } else if (req?._parsedUrl?.pathname.includes("status")) {
               return next()
             } else {
               if (status === "isStaff" || status === "isAdmin") return next()

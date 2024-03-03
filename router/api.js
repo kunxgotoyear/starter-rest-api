@@ -13,19 +13,33 @@ router.get("/:col", async (req, res) => {
     const sheet = doc.sheetsByTitle[col]
     const rows = await sheets(sheet)
     if (rows.status === false) throw rows
-    const read = rows.read()
+    const read = rows.read(req.query.uid ? req.cookies.uid : undefined)
     const result = await read
     const pages = parseInt(req.query.page) || 1
     const totalPages = Math.ceil(result.content.length / 5)
     if (pages < 1 || pages > totalPages) throw {status: false, content: [], message: "Page not found"}
-    result.content = await getDataForPage(pages, result)
-    result.pagination = {
-      page: parseInt(req.query.page) || 1,
-      per_page: 5,
-      total_pages: totalPages,
-      total_items: result.content.length,
+    switch (typeof result.content) {
+      case "array":
+        result.content = getDataForPage(pages, result)
+        result.pagination = {
+          page: parseInt(req.query.page) || 1,
+          per_page: 5,
+          total_pages: totalPages,
+          total_items: result.content.length,
+        }
+        res.status(200).json(result).end()
+        break
+
+      default:
+        result.pagination = {
+          page: parseInt(req.query.page) || 1,
+          per_page: 5,
+          total_pages: totalPages,
+          total_items: result.content.length,
+        }
+        res.status(200).json(result).end()
+        break
     }
-    res.status(200).json(result).end()
   } catch (error) {
     error.status = false
     res.status(400).json(error).end()
@@ -58,9 +72,10 @@ router.post("/:col", async (req, res) => {
     const rows = await sheets(sheet)
     if (rows.status === false) throw rows
     const create = req?.query?.push
-      ? rows.push(col.toUpperCase() + "-" + getId("1234567890", 8), req.body)
-      : rows.create(col.toUpperCase() + "-" + getId("1234567890", 8), req.body)
+      ? rows.push(col.toUpperCase() + "-" + getId("1234567890", 8), {...req.body, uid: req?.cookies?.uid})
+      : rows.create(col.toUpperCase() + "-" + getId("1234567890", 8), {...req.body, uid: req?.cookies?.uid})
     const result = await create
+    if (!result.status) throw result
     res.status(200).json(result).end()
   } catch (error) {
     error.status = false
@@ -77,6 +92,7 @@ router.put("/:col/:id", async (req, res) => {
     const rows = await sheets(sheet)
     if (rows.status === false) throw rows
     const id = req.params.id
+    req.body.uid = req?.cookies?.uid
     const update = rows.update(id, req.body)
     const result = await update
     res.status(200).json(result).end()

@@ -38,31 +38,52 @@ exports.sheets = async (sheet) => {
       // Create
       create: async (id, body) => {
         try {
-          const find = data.find((i) => i.id === id)
-          const findName = data.find((i) => i.name.toLowerCase() === body.name.toLowerCase())
-          if (find || findName) throw "Duplicate Data!"
-          const obj = {
-            id,
-            ...body,
-            date: new Date().getTime(),
-            update: "",
-          }
-          const result = await sheet.addRow(obj)
-          if (!result) throw error
-          return {
-            status: true,
-            content: {id, date: new Date().getTime(), ...body},
+          const findUID = data.find((o, i) => {
+            o["index"] = i
+            return o.uid === body.uid
+          })
+          if (findUID) {
+            const i = findUID.index
+            delete body["id"]
+            delete body["index"]
+            const objExsist = Object.assign(findUID, {
+              ...body,
+              update: new Date().getTime(),
+            })
+            rows[i].assign(objExsist)
+            await rows[i].save()
+            return {
+              status: true,
+              content: {id, update: new Date().getTime(), ...body},
+            }
+          } else {
+            const objNotExsist = {
+              id,
+              ...body,
+              date: new Date().getTime(),
+              update: "",
+            }
+            const result = await sheet.addRow(objNotExsist)
+            if (!result) throw error
+            return {
+              status: true,
+              content: {id, date: new Date().getTime(), ...body},
+            }
           }
         } catch (error) {
-          return {status: false, content: error}
+          console.log(error)
+          return {status: false, content: [], message: error.message}
         }
       },
-      // Create
+      // Custom Create
       customCreate: async (custom, id, body) => {
         try {
-          const find = data.find((i) => i.id === id)
-          const findCustom = data.find((i) => i[custom].toLowerCase() === body[custom].toLowerCase())
-          if (find || findCustom) throw "Duplicate Data!"
+          let index = null
+          const find = data.find((o, i) => {
+            index = i
+            return o.id === id || o[custom].toLowerCase() === body[custom].toLowerCase()
+          })
+          if (find) throw "Duplicate Data!"
           const obj = {
             id,
             ...body,
@@ -83,10 +104,22 @@ exports.sheets = async (sheet) => {
       read: async (id) => {
         if (id) {
           try {
-            const find = data.find((i) => i.id === id)
-            const findIndex = data.findIndex((i) => i.id === id)
+            let index = null
+            // const find = data.find((o, i) => {
+            //   index = i
+            //   return o.id === id || o[custom].toLowerCase() === body[custom].toLowerCase()
+            // })
+            const find = data.find((o, i) => {
+              for (const key in o) {
+                if (o.hasOwnProperty(key) && o[key] === id) {
+                  index = i
+                  return true
+                }
+              }
+              return false
+            })
             if (!find) throw "Data not found!"
-            return {status: true, content: {...find, index: findIndex}}
+            return {status: true, content: find}
           } catch (error) {
             return {status: false, content: error}
           }
@@ -98,7 +131,7 @@ exports.sheets = async (sheet) => {
           }
         }
       },
-      // Read
+      // Read Status
       status: async (id) => {
         if (id) {
           try {
@@ -175,7 +208,7 @@ exports.sheets = async (sheet) => {
   }
 }
 
-exports.getDataForPage = async (page, result) => {
+exports.getDataForPage = (page, result) => {
   const startIndex = (page - 1) * 5
   const endIndex = startIndex + 5
   return result.content.slice(startIndex, endIndex)

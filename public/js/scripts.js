@@ -3,12 +3,12 @@ const modal = new mdb.Modal(myModalEl, {backdrop: "static", keyboard: false, foc
 modal.show()
 const instance = mdb.Toast.getInstance(document.getElementById("placement-example-toast"))
 
+// Notif
 ;(this.Notif = (instance) => {
   return {
     update: () => {
       instance.update({
         stacking: true,
-
         hidden: true,
         width: "375px",
         position: "top-right",
@@ -28,6 +28,45 @@ const instance = mdb.Toast.getInstance(document.getElementById("placement-exampl
 })(instance).update()
 
 $(document).ready(async function () {
+  const myRating = document.querySelector(".rating")
+  let instanceRating = new mdb.Rating(myRating)
+  if (myRating) {
+    const x = document.querySelectorAll("[data-mdb-original-title]")
+    x.forEach((el) => {
+      el.addEventListener("click", (e) => {
+        modal.show()
+        $.ajax({
+          type: "POST",
+          url: "/api/rating?Content-Type=application/json&Charset=UTF-8",
+          data: {
+            rating: e.target.dataset.ratingValue,
+          },
+          dataType: "json",
+          success: function (response) {
+            console.log(response)
+            modal.hide()
+          },
+          error: function (result) {
+            console.log(result)
+          },
+        })
+      })
+    })
+    modal.show()
+    $.ajax({
+      type: "GET",
+      url: `/api/rating?Content-Type=application/json&Charset=UTF-8&uid=true`,
+      dataType: "json",
+      success: function (response) {
+        console.log(response.content.rating)
+        instanceRating.dispose()
+        instanceRating = new mdb.Rating(myRating, {value: response.content.rating})
+      },
+      error: function (result) {
+        console.log(result)
+      },
+    })
+  }
   $.ajax({
     type: "POST",
     url: "/auth/status?Content-Type=application/json&Charset=UTF-8",
@@ -78,6 +117,7 @@ $(document).ready(async function () {
       }
     },
   })
+
   $("[data-form-forgot]").submit((e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
